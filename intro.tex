@@ -1,0 +1,56 @@
+\section{Introduction}
+
+% \begin{wrapfigure}{tr}{0.98\linewidth}
+% \centering
+% \vspace{-0.5in}
+% \includegraphics[width=0.95\linewidth]{pictures/samples.jpg}
+% \caption{$1024\times 1024$ images from one-step SDXL aligned via \textsc{Didr}. Prompts listed in Appendix~\ref{app:prompts}.}
+% \label{fig:teaser}
+% \vspace{-0.3in}
+% \end{wrapfigure}
+Deep generative models have achieved remarkable progress in text-to-image (T2I) synthesis~\citep{rombach2022high,saharia2022photorealistic,ramesh2022hierarchical,esser2024scaling,nichol2021improved,karras2020analyzing}, driving the development of one-step generators~\citep{Luo2023DiffInstructAU,yin2024improved,zhou2024long,sauer2023stylegan,kang2023gigagan,zheng2024diffusion,liu2023instaflow,xu2024ufogen} that map latent noise directly to images in a single forward pass via diffusion distillation~\citep{luo2023comprehensive} and GAN-based techniques~\citep{goodfellow2014generative,sauer2023adversarial,zheng2025ultra}. While these models achieve real-time synthesis, they frequently exhibit suboptimal aesthetic quality and poor alignment with human preferences---a central requirement for real-world deployment.
+
+Diff-Instruct\citep{luo2023diffinstruct} opens the door to train one-step image generators by distribution matching distillation\citep{yin2023one} by minimizing an Integral Kullback-Leibler divergence. Later works based on concepts of distribution matching explored the reinforcement learning post-training of one-step text-to-image generators by combining image-space rewards with latent space distribution matching~\citep{anonymous2024diffinstruct,luo2024onestep}. However, these attempts lack a trajectory-level target directly induced by the KL-regularized RLHF optimum. These methods apply preference signals exclusively at the clean image output $x_0$ while imposing KL regularization over the full noisy trajectory. This creates a structural mismatch: the reward acts at the clean-image level while the regularizer spans all noise levels, so the combined objective does not correspond to any proper RLHF-induced target on the generator distribution. We refer to the resulting tendency to over-tilt toward high-reward outputs as \textbf{terminal reward domination}, and make it precise in a tractable example (\S\ref{subsec:trd}). In contrast, \textsc{Didr} derives a principled trajectory-level target directly from the KL-regularized RLHF optimum, ensuring that reward and regularization are balanced at every noise level.
+
+
+To close this gap, we propose \textbf{Diff-Instruct with Diffused Reward} ({\textsc{Didr}}), a principled reinforcement learning framework for one-step image generators without using image data. Our core insight is to systematically propagate reward signals defined on clean images to every noise level of the diffusion trajectory. We realize this by starting from the KL-regularized RLHF objective, identifying its optimal clean-image target as the reward-tilted density $q^*(x_0|c) \propto q_0(x_0|c)\exp(r(x_0,c)/\tau)$, and diffusing this target through the reference process to obtain trajectory-level reward-tilted marginals $q_t^*(x_t|c)$. Minimizing the Integral KL (IKL) divergence against these marginals yields a target score that decomposes into the reference score plus a reward-induced correction, the \textbf{Diffused Reward Score (DRS)}, defined at every noise level through reference posterior.
+
+\begin{figure}[!t]
+\centering
+\includegraphics[width=0.95\linewidth]{pictures/samples.jpg}
+\caption{$1024\times 1024$ images from one-step SDXL aligned via \textsc{Didr}. Prompts in Appendix~\ref{app:prompts}.}
+\label{fig:teaser}
+\end{figure}
+
+Since the DRS involves an intractable posterior expectation, we further derive the \textbf{Diffused Reward Proxy (DRP)}: a differentiable estimator that runs short-step denoising chains from $x_t$ using the frozen reference model, propagating reward gradients stably back through the trajectory to yield a practical, data-free algorithm. Empirically, compared with Diff-Instruct*~\citep{luo2024onestep} (the strongest prior one-step SDXL baseline), \textsc{Didr}$_{\text{longer}}$ improves PickScore from $23.1$ to $23.9$ and ImageReward from $1.01$ to $1.10$ ($+8.9\%$); the standard \textsc{Didr} achieves the best PickScore--FID trade-off among one-step methods. We also scales \textsc{Didr} to the 6B Z-Image backbone, surpassing the 50-step base in a single step. We summarize our contributions as follows:
+\begin{itemize}[leftmargin=6pt, noitemsep, topsep=2pt]
+    % \item We propose \textsc{Didr}, a principled trajectory-level alignment framework for one-step generators that formulates preference optimization as minimization over reward-tilted diffusion marginals---providing the unified trajectory-level objective that prior endpoint-only methods lacked.
+
+    % \item We derive the Diffused Reward Score (DRS) and Diffused Reward Proxy (DRP) as a tractable realization of this objective, propagating clean-image rewards across the full diffusion trajectory using only a frozen reference model.
+
+    % \item Without image training data, we demonstrate on one-step SDXL at $1024\times1024$ that \textsc{Didr} consistently improves preference metrics over existing one-step baselines, achieves the best PickScore--FID trade-off among one-step alignment methods, and generalizes to a 6B DiT-based Z-Image backbone.
+        \item We identify \emph{terminal reward domination} (a structural mismatch in prior endpoint-only methods where optimizers exploit noise to collapse onto high-reward regions) and propose \textsc{Didr}, a principled trajectory-level alignment framework. Grounded in our proof of Integral KL equivalence to KL-regularized RLHF, \textsc{Didr} rigorously propagates the RLHF-optimal, reward-tilted clean-image density forward to define a principled alignment target at \emph{every} noise level.
+
+    \item We analytically derive {DRS}, which exactly decomposes the trajectory target score into a reference score plus a reward-induced correction. To make this tractable, we introduce {DRP}, a zero-data estimator that computes this correction via differentiable short-step posterior denoising through a frozen reference model, enabling stable reward-gradient propagation across the entire trajectory.
+
+    \item Extensive experiments demonstrate that \textsc{Didr} sets a new state-of-the-art for one-step alignment without requiring any image training data. On one-step SDXL at $1024 \times 1024$, standard \textsc{Didr} Pareto-dominates all existing one-step baselines in the PickScore--FID trade-off, while \textsc{Didr}$_{\text{longer}}$ pushes PickScore to $23.9$ and ImageReward from $1.01$ to $1.10$ ($+8.9\%$). Furthermore, \textsc{Didr} successfully transfers to a 6B DiT-based Z-Image backbone, surpassing its 50-step teacher on preference metrics in a single step.
+\end{itemize}
+
+% \begin{wrapfigure}{tr}{0.98\linewidth}
+% \centering
+% \vspace{-0.5in}
+% \includegraphics[width=0.95\linewidth]{pictures/samples.jpg}
+% \caption{$1024\times 1024$ images from one-step SDXL aligned via \textsc{Didr}. Prompts listed in Appendix~\ref{app:prompts}.}
+% \label{fig:teaser}
+% \vspace{-0.3in}
+% \end{wrapfigure}
+
+% \begin{figure}[!t]
+% \centering
+% \includegraphics[width=0.95\linewidth]{pictures/samples.jpg}
+% \caption{$1024\times 1024$ images from one-step SDXL aligned via \textsc{Didr}. Prompts are listed in Appendix~\ref{app:prompts}.}
+% \label{fig:teaser}
+% \end{figure}
+
+
+% ============================================================

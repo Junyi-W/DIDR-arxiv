@@ -1,0 +1,34 @@
+\begin{table*}[!t]
+\centering
+\caption{Comparison of \textsc{Didr} against baselines at $1024\times1024$ resolution. Multi-step models are shown as reference only (no bold). \textbf{Bold}: best result within each one-step group. $\uparrow$/$\downarrow$: higher/lower is better. $^\dagger$: Z-Image-Turbo at 1~NFE (unofficial; \textsc{Didr} training initialization only).}
+\label{tab:main}
+\resizebox{\textwidth}{!}{\begin{tabular}{lclccccccccc}
+\toprule
+& & & & \multicolumn{4}{c}{\textbf{Preference} $\uparrow$} & \multicolumn{3}{c}{\textbf{Text Alignment} $\uparrow$} & \\
+\cmidrule(lr){5-8} \cmidrule(lr){9-11}
+\textbf{Model} & \textbf{Steps} & \textbf{Arch.} & \textbf{Params} & \textbf{PickS.} & \textbf{ImgR.} & \textbf{HPSv2.1} & \textbf{Aesth.} & \textbf{CLIP} & \textbf{DPG} & \textbf{GenEval} & \textbf{FID} $\downarrow$ \\
+\midrule
+\multicolumn{12}{l}{\textit{Multi-step reference}} \\
+SDXL~\citep{podell2023sdxl}            & 50 & UNet & 2.6B & 22.8 & 0.82 & 28.98 & 5.45 & 33.86 & 74.42 & 0.551 & 15.9 \\
+SDXL-DPO~\citep{wallace2024diffusion}  & 50 & UNet & 2.6B & 22.8 & 0.92 & 30.45 & 5.61 & 33.97 & 74.24 & 0.549 & 21.5 \\
+SD3.5-large~\citep{sd35}               & 28 & DiT  & 8B   & 23.0 & 1.01 & 30.06 & 5.42 & 33.85 & 84.88 & 0.717 & 17.7 \\
+FLUX-dev~\citep{fluxdev}               & 50 & DiT  & 12B  & 23.2 & 1.05 & 30.65 & 5.54 & 32.88 & 83.86 & 0.672 & 24.8 \\
+Z-Image~\citep{zimage}                 & 50 & DiT  & 6B   & 22.5 & 0.99 & 30.57 & 5.43 & 33.15 & 86.30 & 0.840 & 14.3 \\
+\midrule
+\multicolumn{12}{l}{\textit{One-step SDXL}} \\
+SDXL DMD2~\citep{yin2024improved}                  & 1 & UNet & 2.6B & 22.3 & 0.83 & 29.99 & 5.47 & 33.31 & 74.01 & 0.557 & \textbf{13.7} \\
+SDXL Diff-Instruct~\citep{Luo2023DiffInstructAU}   & 1 & UNet & 2.6B & 22.4 & 0.92 & 31.51 & 5.53 & 33.35 & 74.98 & 0.560 & 19.3 \\
+SDXL Diff-Instruct++~\citep{anonymous2024diffinstruct} & 1 & UNet & 2.6B & 22.4 & 0.92 & 31.44 & 5.58 & \textbf{33.37} & 75.01 & 0.560 & 19.0 \\
+SDXL Diff-Instruct*~\citep{luo2024onestep}          & 1 & UNet & 2.6B & 23.1 & 1.01 & 33.29 & 5.68 & 33.09 & 74.97 & 0.555 & 18.9 \\
+\textbf{SDXL \textsc{Didr} (Ours)}                  & 1 & UNet & 2.6B & 23.5 & 1.04 & 33.77 & 5.82 & 33.03 & \textbf{75.06} & \textbf{0.579} & 18.8 \\
+\textbf{SDXL \textsc{Didr}$_{\text{longer}}$ (Ours)} & 1 & UNet & 2.6B & \textbf{23.9} & \textbf{1.10} & \textbf{33.89} & \textbf{5.83} & 32.97 & 74.99 & 0.566 & 20.6 \\
+\midrule
+\multicolumn{12}{l}{\textit{Z-Image backbone}} \\
+Z-Image-Turbo~\citep{zimage}                        & 8 & DiT & 6B & \textbf{23.0} & 1.01 & \textbf{31.86} & 5.39 & 33.08 & 85.00 & \textbf{0.750} & 25.2 \\
+\textbf{Z-Image \textsc{Didr} (Ours)}               & 1 & DiT & 6B & 22.6 & \textbf{1.08} & 31.40 & \textbf{5.46} & \textbf{33.35} & \textbf{86.63} & 0.692 & \textbf{22.1} \\
+\hdashline
+Z-Image-Turbo$^\dagger$~\citep{zimage}              & 1 & DiT & 6B & 21.0 & 0.39 & 24.54 & 4.68 & 33.28 & 77.05 & 0.572 & 36.7 \\
+\bottomrule
+\end{tabular}}
+\vspace{-0.15in}
+\end{table*}

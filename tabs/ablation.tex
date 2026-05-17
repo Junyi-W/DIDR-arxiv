@@ -1,0 +1,43 @@
+\begin{table}[h]
+% \vspace{-0.1in}
+\centering
+\small
+\begin{minipage}[t]{0.44\linewidth}
+\centering
+\setlength{\tabcolsep}{4pt}
+\caption{\textbf{Effect of $(K,S)$.} Both axes contribute independently; $(K,S){=}(4,4)$ is best. $^\dagger$: default; \textbf{bold}: best in column.}
+\begin{tabular}{cccccc}
+\toprule
+$K$ & $S$ & \textbf{PickS.} $\uparrow$ & \textbf{ImgR.} $\uparrow$ & \textbf{Aesth.} $\uparrow$ & \textbf{FID} $\downarrow$ \\
+\midrule
+1          & 1          & 22.6 & 0.80 & 5.32 & 24.1 \\
+1          & 2          & 22.8 & 0.86 & 5.41 & 22.4 \\
+1          & 4          & 23.1 & 0.92 & 5.66 & 20.8 \\
+2          & 1          & 22.7 & 0.84 & 5.44 & 23.5 \\
+4          & 1          & 22.8 & 0.90 & 5.50 & 22.0 \\
+$4^\dagger$ & $4^\dagger$ & \textbf{23.5} & \textbf{1.04} & \textbf{5.82} & \textbf{18.8} \\
+\bottomrule
+\end{tabular}
+\label{tab:ablation_ks}
+\end{minipage}\ \ 
+\hfill
+\begin{minipage}[t]{0.53\linewidth}
+\centering
+\setlength{\tabcolsep}{5pt}
+\caption{\textbf{Effect of $\tau$.} Lower $\tau$ improves preference at the cost of FID; $\tau{=}0.01$ is the operating point. $(K,S){=}(4,4)$ fixed. $^\dagger$: default; \textbf{bold}: best in column.}
+\begin{tabular}{lcccc}
+\toprule
+$\tau$ & \textbf{PickS.} $\uparrow$ & \textbf{ImgR.} $\uparrow$ & \textbf{Aesth.} $\uparrow$ & \textbf{FID} $\downarrow$ \\
+\midrule
+$1.00$             & 22.6          & 0.88          & 5.56          & \textbf{16.3} \\
+$0.50$             & 22.9          & 0.93          & 5.41          & 17.1 \\
+$0.10$             & 22.9          & 1.02          & 5.68          & 17.5 \\
+$0.05$             & 23.2          & 1.01          & 5.74          & 17.8 \\
+$0.01^\dagger$     & 23.5          & 1.04          & 5.82          & 18.8 \\
+$0.001$            & \textbf{23.8} & \textbf{1.17} & \textbf{5.83} & 22.2 \\
+\bottomrule
+\end{tabular}
+\label{tab:ablation_tau}
+\end{minipage}
+% \vspace{-0.1in}
+\end{table}

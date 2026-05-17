@@ -1,0 +1,9 @@
+\section{Conclusion and Limitations}
+\vspace{-3mm}
+
+\textbf{Conclusion.} We identified terminal reward domination as a fundamental failure mode of trajectory distillation with terminal rewards, and proposed \textsc{Didr} to resolve it. The core idea is to lift the RLHF-optimal clean-image target $q^*$ to a principled trajectory objective via the Diffused Reward Score, and approximate it tractably with the Diffused Reward Proxy through differentiable short-step denoising---requiring no image training data. \textsc{Didr} achieves the best PickScore--FID trade-off among one-step alignment methods, improves all four preference metrics over the strongest prior baseline, and transfers to the 6B Z-Image backbone, surpassing its 50-step teacher on preference metrics in a single step. These results indicate that principled trajectory-level reward propagation is an effective alignment strategy across architectures and scales.
+
+\textbf{Limitations.} Since DRP propagates gradients through the reward model, it may amplify reward-model biases or trigger reward hacking when the reward model is imperfect. Each generator update also requires $K \times S$ differentiable reference-denoising steps, increasing training cost relative to endpoint-only methods. Finally, counting, fine-grained structure, and complex multi-object scenes remain open challenges for single-step generation (Figure~\ref{fig:failure}). Extending \textsc{Didr} to multi-step generators and developing reward-ensemble strategies to mitigate hacking are natural directions for future work.
+
+% Acknowledgments removed for anonymous submission.
+

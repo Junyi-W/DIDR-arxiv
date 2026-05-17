@@ -1,0 +1,10 @@
+\section{Related Work}
+\vspace{-3mm}
+\textbf{RLHF and Preference Alignment for Diffusion Models.}
+Preference alignment for multi-step diffusion models uses trajectory-accessible signals via supervised fine-tuning~\citep{dai2023emu,podell2023sdxl}, reward backpropagation~\citep{prabhudesai2023aligning,clark2023directly,black2023training,fan2024reinforcement}, or offline preference optimization~\citep{wallace2024diffusion,yang2024using,hong2024margin}. These methods rely on explicit denoising trajectories and do not directly address one-step generators with implicit distributions; \textsc{Didr} derives a compatible trajectory objective that applies to implicit generators without requiring trajectory access during inference.
+
+\textbf{Classifier Guidance and Reward-Guided Sampling.}
+Classifier guidance~\citep{dhariwal2021diffusion} adds $\nabla_{x_t}\log p(c|x_t)$ to the score, which is a first-order approximation of the DRS (Remark~\ref{rem:classifier_guidance}), and related inference-time methods~\citep{chung2022diffusion,prabhudesai2023aligning,clark2023directly,kong2026ultra} apply differentiable rewards along the trajectory. However, all such methods modify only the sampling procedure and leave the generator weights unchanged; \textsc{Didr} instead trains an aligned one-step generator.
+
+% ============================================================
+\vspace{-3mm}

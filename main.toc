@@ -1,0 +1,51 @@
+\babel@toc {english}{}\relax 
+\contentsline {section}{\numberline {1}Introduction}{1}{section.1}%
+\contentsline {section}{\numberline {2}Preliminaries}{3}{section.2}%
+\contentsline {section}{\numberline {3}The Proposed Diff-Instruct with Diffused Reward}{4}{section.3}%
+\contentsline {subsection}{\numberline {3.1}Terminal Reward Domination}{4}{subsection.3.1}%
+\contentsline {subsection}{\numberline {3.2}Reward-Tilted Trajectory Objective}{5}{subsection.3.2}%
+\contentsline {subsection}{\numberline {3.3}Diffused Reward Proxy}{6}{subsection.3.3}%
+\contentsline {subsection}{\numberline {3.4}Practical Training with a Teaching Assistant}{7}{subsection.3.4}%
+\contentsline {section}{\numberline {4}Empirical Results}{8}{section.4}%
+\contentsline {subsection}{\numberline {4.1}Quantitative Results}{8}{subsection.4.1}%
+\contentsline {subsection}{\numberline {4.2}Qualitative Comparison}{9}{subsection.4.2}%
+\contentsline {subsection}{\numberline {4.3}Ablation Studies}{9}{subsection.4.3}%
+\contentsline {section}{\numberline {5}Related Work}{10}{section.5}%
+\contentsline {section}{\numberline {6}Conclusion and Limitations}{11}{section.6}%
+\contentsline {section}{\numberline {A}Method Supplements}{17}{appendix.A}%
+\contentsline {section}{\numberline {B}Additional Qualitative Results}{17}{appendix.B}%
+\contentsline {section}{\numberline {C}Theoretical Derivations}{18}{appendix.C}%
+\contentsline {subsection}{\numberline {C.1}Proof of the RLHF-Target Equivalence (Eq.~\eqref {eq:rlhf_kl})}{18}{subsection.C.1}%
+\contentsline {subsection}{\numberline {C.2}Proof of Proposition~\ref {thm:ikl_equiv} (IKL Shares the RLHF Minimizer)}{19}{subsection.C.2}%
+\contentsline {subsection}{\numberline {C.3}Proof of Theorem~\ref {thm:score_gradient} (Score-based DIDR Gradient)}{20}{subsection.C.3}%
+\contentsline {subsection}{\numberline {C.4}Proof of Proposition~\ref {prop:drp} (Diffused Reward Proxy)}{21}{subsection.C.4}%
+\contentsline {subsection}{\numberline {C.5}A Bimodal Gaussian Example of Terminal Reward Domination}{22}{subsection.C.5}%
+\contentsline {paragraph}{Setup.}{22}{section*.13}%
+\contentsline {paragraph}{Exact reward expectation.}{23}{section*.14}%
+\contentsline {paragraph}{Forward marginals.}{23}{section*.15}%
+\contentsline {paragraph}{Objective and convexity.}{23}{section*.16}%
+\contentsline {paragraph}{Computing $D_t'(1)$.}{23}{section*.17}%
+\contentsline {paragraph}{Collapse condition.}{24}{section*.18}%
+\contentsline {paragraph}{Closed-form evaluation of $B_{\rm crit}$.}{25}{section*.19}%
+\contentsline {section}{\numberline {D}1-D Toy Experiment}{25}{appendix.D}%
+\contentsline {paragraph}{Reference distribution and reward.}{25}{section*.20}%
+\contentsline {paragraph}{Forward process.}{26}{section*.21}%
+\contentsline {paragraph}{Networks.}{26}{section*.22}%
+\contentsline {paragraph}{Training pipeline.}{26}{section*.23}%
+\contentsline {paragraph}{Evaluation.}{26}{section*.24}%
+\contentsline {section}{\numberline {E}Evaluation Metrics}{26}{appendix.E}%
+\contentsline {paragraph}{Preference metrics.}{26}{section*.25}%
+\contentsline {paragraph}{Text-alignment metrics.}{27}{section*.26}%
+\contentsline {paragraph}{Fidelity metric.}{27}{section*.27}%
+\contentsline {section}{\numberline {F}Per-Category Results}{27}{appendix.F}%
+\contentsline {section}{\numberline {G}Full Training Algorithm}{28}{appendix.G}%
+\contentsline {section}{\numberline {H}Implementation Details}{29}{appendix.H}%
+\contentsline {subsection}{\numberline {H.1}SDXL Experiments}{29}{subsection.H.1}%
+\contentsline {paragraph}{Generator Architecture.}{29}{section*.30}%
+\contentsline {paragraph}{Training Setup.}{30}{section*.31}%
+\contentsline {paragraph}{Ablation Experiments.}{30}{section*.32}%
+\contentsline {subsection}{\numberline {H.2}Z-Image Experiments}{30}{subsection.H.2}%
+\contentsline {paragraph}{Generator Architecture.}{30}{section*.33}%
+\contentsline {paragraph}{Training Setup.}{31}{section*.34}%
+\contentsline {paragraph}{DRP Posterior Sampling for Flow Matching.}{31}{section*.35}%
+\contentsline {section}{\numberline {I}Image Generation Prompts}{31}{appendix.I}%
