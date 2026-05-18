@@ -1,7 +1,6 @@
 \section{The Proposed Diff-Instruct with Diffused Reward}
 \label{sec:method}
 
-
 \textsc{Didr} resolves the target mismatch of prior methods through four steps.
 (i)~We illustrate how the structural mismatch in $\mathcal{L}_{\mathrm{term}}$ can lead to over-tilting via a tractable example (\S\ref{subsec:trd}).
 (ii)~We diffuse the RLHF-optimal clean-image target $q^*$ through the reference process to obtain principled trajectory-level marginals $\{q_t^*\}$, and show that minimizing the IKL against $\{q_t^*\}$ is equivalent to KL-regularized RLHF (\S\ref{subsec:target}).
@@ -195,27 +194,9 @@ Here the pathwise reward gradient is
 \end{proposition}
 (See Appendix~\ref{app:proof_lem4} for derivation.) The softmax weights $\omega^{(k)}$ concentrate gradient mass on high-reward denoised images, while the pathwise Jacobian $\partial\mathcal{G}_{\mathrm{ref}}/\partial x_t$ propagates clean-image reward information back to $x_t$ through the frozen denoising chain without storing reference model activations.
 
-% % \begin{figure}[!t]
-% \begin{wrapfigure}{tr}{0.66\linewidth}
-% \vspace{-0.16in}
-% \centering
-% \includegraphics[width=0.99\linewidth]{pictures/Pipeline.png}
-% \caption{\textbf{The \textsc{Didr} training framework.} \textbf{Stage I (TA):} $s_\psi$ tracks the generator's marginals via DSM. \textbf{Stage II (Generator):} $g_\theta$ is updated toward the reward-tilted target score $\tilde{s}_{\mathrm{ref}}+s_r$.}
-% \label{fig:workflow}
-% \end{wrapfigure}
-
-% \begin{figure}[!t]
-% \centering
-% \includegraphics[width=0.95\linewidth]{pictures/Pipeline.png}
-% \caption{\textbf{The \textsc{Didr} training framework.} \textbf{Stage I (TA):} $s_\psi$ tracks the generator marginals via DSM. \textbf{Stage II (Generator):} $g_\theta$ is updated toward the reward-tilted target score $\tilde{s}_{\mathrm{ref}} + s_r$.}
-% \label{fig:workflow}
-% \end{figure}
-
-% \end{figure}
 \begin{remark}[Why the proxy works]
 At low noise, the posterior $q(x_0|x_t,c)$ is concentrated, so short denoising chains yield accurate proxies. At high noise, $x_t$ carries little information about $x_0$, so the DRS correction is less sensitive to the accuracy of individual posterior samples; a short denoising proxy captures the leading-order correction.
 \end{remark}
-
 
 \vspace{-3mm}
 \subsection{Practical Training with a Teaching Assistant}
@@ -254,21 +235,4 @@ s_r(x_t,t,c)
 
 \textsc{Didr} alternates two stages (Algorithm~\ref{alg:didr}, Figure~\ref{fig:workflow}). \textbf{Stage I} keeps $s_\psi$ synchronized with the evolving $g_\theta$: sample $x_0 = g_\theta(z,c)$, diffuse to $x_t$, and update $s_\psi$ via DSM. \textbf{Stage II} updates $g_\theta$: draw $K$ differentiable $S$-step denoising chains from $x_t$, compute the DRP weights, and backpropagate Eq.~\eqref{eq:grad_practical} to $\theta$. Both the reference diffusion model and the reward model remain frozen throughout.
 
-% \begin{algorithm}[t]
-% \caption{\textsc{Didr} Training (see Appendix~\ref{app:alg_detail} for full pseudocode)}
-% \label{alg:didr}
-% \SetAlgoLined
-% \small
-% \While{\textnormal{not converged}}{
-% \textbf{Stage I -- TA update:} sample $x_0=g_\theta(z,c)$, diffuse to $x_t$, and update $s_\psi$ by DSM to track $p_{\theta,t}$\;
-% \BlankLine
-% \textbf{Stage II -- Generator update:}\;
-% \quad sample $x_0=g_\theta(z,c)$ and diffuse to $x_t$\;
-% \quad run $K$ differentiable $S$-step reference denoising chains from $x_t$ to obtain $\{\hat{x}_0^{(k)}\}_{k=1}^{K}$\;
-% \quad compute $s_r=\frac{1}{\tau}\sum_k\omega^{(k)}\nabla_{x_t}r(\hat{x}_0^{(k)},c)$, with $\omega^{(k)}\propto\exp(r(\hat{x}_0^{(k)},c)/\tau)$\;
-% \quad update $\theta$ using $w(t)(s_\psi-\tilde{s}_{\mathrm{ref}}-s_r)\partial x_t/\partial\theta$\;
-% }
-% \end{algorithm}
-
-% ============================================================
 \vspace{-3mm}

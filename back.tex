@@ -1,22 +1,8 @@
 \section{Preliminaries}\label{sec:background}
 
-% \textbf{Diffusion Trajectories and One-step Generators.}
-% Let $q_0(x_0|c)$ denote the reference clean-image distribution conditioned on prompt $c$. A diffusion model defines a forward noising process $q_t(x_t|x_0)$, with marginals $q_t(x_t|c)=\int q_t(x_t|x_0)q_0(x_0|c)\diff x_0$. Its score network $s_{\mathrm{ref}}(x_t,t,c)\approx\nabla_{x_t}\log q_t(x_t|c)$ is trained by denoising score matching (DSM)~\citep{vincent2011connection,song2021scorebased} and is kept frozen in our method. A one-step generator~\citep{goodfellow2014generative} maps noise directly to a clean image, $x_0=g_\theta(z,c)$ with $z\sim p_z$, inducing an implicit distribution $p_{\theta,0}(x_0|c)$. Forward noising of generator samples gives the trajectory $p_{\theta,t}(x_t|c)$.
-
 \textbf{Diffusion Trajectories and One-step Generators.} Let $x_0$ denote a clean image drawn from the reference data distribution $q_0(x_0|c)$, conditioned on a text prompt $c$. A diffusion model defines a forward noising process that gradually corrupts $x_0$ into pure noise over a continuous time variable $t \in [0, T]$. This is characterized by a transition kernel $q_t(x_t|x_0)$, which induces the noisy marginal distributions $q_t(x_t|c) = \int q_t(x_t|x_0)q_0(x_0|c)\diff x_0$. To reverse this process for image generation, one needs the Stein score of the marginals, $\nabla_{x_t}\log q_t(x_t|c)$, a vector field pointing toward higher data density. In practice, a neural network $s_{\mathrm{ref}}(x_t, t, c)$ is trained to approximate this score via Denoising Score Matching (DSM)~\citep{vincent2011connection,song2021scorebased}. In our framework, this trained multi-step diffusion model serves as the \emph{reference model} and is kept frozen.
 
 While the reference model generates high-quality images, its iterative sampling process is computationally expensive. To achieve real-time synthesis, a one-step generator~\citep{goodfellow2014generative,song2023consistency} bypasses the iterative ODE/SDE integration entirely. It maps a standard Gaussian noise vector $z \sim p_z$ directly to a clean image in a single forward pass: $x_0 = g_\theta(z, c)$. This mapping induces an implicit clean-image distribution, denoted as $p_{\theta,0}(x_0|c)$. By hypothetically injecting the same forward noise into these generated samples, we can define the generator's noisy trajectory $p_{\theta,t}(x_t|c) = \int q_t(x_t|x_0)p_{\theta,0}(x_0|c)\diff x_0$. This distinction between the reference trajectory $q_t$ and the generator trajectory $p_{\theta,t}$ is crucial, as our objective relies on matching their reward-tilted dynamics.
-
-
-% \textbf{Trajectory Distillation and Terminal-reward Alignment.}
-% Diff-Instruct~\citep{Luo2023DiffInstructAU} trains one-step generators via an Integral KL (IKL) divergence over reference marginals $\{q_t\}_{t\in[0,T]}$. Diff-Instruct* (DI*,~\citep{luo2024onestep}) and Diff-Instruct++ (DI++,~\citep{anonymous2024diffinstruct}) extend this for preference alignment by appending a terminal reward, with $\mathcal{D}$ a generic divergence:
-% \begin{equation}
-% \mathcal{L}_{\mathrm{term}}(\theta)
-% = -\E_{c,\, x_0 \sim p_{\theta,0}(x_0|c)}[r(x_0,c)]
-% + \tau\int_0^T w(t)\,\mathcal{D}\!\bigl(p_{\theta,t}(x_t|c)\|q_t(x_t|c)\bigr)\diff t.
-% \label{eq:lterm}
-% \end{equation}
-% The regularizer targets bare reference marginals $\{q_t\}$ while the reward acts only on $x_0$, creating a mismatch that motivates our construction in Section~\ref{sec:method}.
 
 \textbf{Trajectory Distillation and Terminal-reward Alignment.}
 Standard one-step distillation, such as Diff-Instruct~\citep{Luo2023DiffInstructAU}, trains one-step generators by minimizing an Integral KL (IKL) divergence across the entire diffusion trajectory, anchoring the generator's noisy marginals to the bare reference marginals $\{q_t\}_{t\in[0,T]}$. To incorporate human preferences, recent methods like Diff-Instruct* (DI*,~\citep{luo2024onestep}) and Diff-Instruct++ (DI++,~\citep{anonymous2024diffinstruct}) extend this objective by naively appending a terminal reward. For a generic divergence $\mathcal{D}$, the objective becomes:
@@ -28,20 +14,7 @@ Standard one-step distillation, such as Diff-Instruct~\citep{Luo2023DiffInstruct
 \end{equation}
 Critically, this formulation evaluates the reward exclusively at the clean-image endpoint ($x_0$), while applying KL regularization against the unrewarded reference marginals ($\{q_t\}$) across all noise levels. This structural mismatch creates a fundamental optimization loophole: because forward noise naturally masks image details, the regularization penalty against mode divergence drastically weakens at high noise levels. Optimizers readily exploit this trajectory vulnerability, abandoning the reference distribution to collapse onto high-reward regions without incurring sufficient KL penalty. We formally identify this failure mode as \emph{terminal reward domination}. Resolving this inherent misalignment necessitates a principled trajectory-level target, which directly motivates our construction in Section~\ref{sec:method}.
 
-
-% \textbf{KL-regularized Preference Target.}
-% Preference optimization with a scalar reward $r(x_0,c)$ is commonly formulated as KL-regularized RLHF~\citep{christiano2017deep,ouyang2022training}:
-% \begin{equation}
-% \mathcal{L}(\theta) = \E_{c,\, x_0 \sim p_\theta(x_0|c)} \bigl[-r(x_0, c)\bigr] + \tau\, \mathcal{D}_{\mathrm{KL}}\!\bigl(p_\theta(x_0|c) \| q_0(x_0|c)\bigr),
-% \label{eq:rlhf_kl}
-% \end{equation}
-% where $\tau>0$ controls the preference-fidelity trade-off. This objective has the closed-form reward-tilted optimum
-% \begin{equation}
-% q^*(x_0|c) = \frac{1}{Z(c)}\, q_0(x_0|c)\exp\!\left(\frac{r(x_0,c)}{\tau}\right),
-% \label{eq:reward_tilted_target}
-% \end{equation}
-% where $Z(c)$ normalizes the density. Equivalently, Eq.~\eqref{eq:rlhf_kl} differs from $\tau\mathcal{D}_{\mathrm{KL}}(p_\theta\|q^*)$ only by a constant independent of $\theta$ (Appendix~\ref{app:proof_lem1}). Thus $q^*$ is the principled clean-image target for KL-regularized preference alignment.
-\textbf{The Principled KL-Regularized Target.} 
+\textbf{The Principled KL-Regularized Target.}
 To construct a mathematically sound trajectory objective, we must first establish the correct alignment target at the clean-image level. Standard Reinforcement Learning from Human Feedback (RLHF)~\citep{christiano2017deep,ouyang2022training} formulates preference optimization by balancing reward maximization against a KL-divergence penalty to explicitly prevent fidelity degradation:
 \begin{equation}
 \mathcal{L}(\theta) = \E_{c,\, x_0 \sim p_\theta(x_0|c)} \bigl[-r(x_0, c)\bigr] + \tau\, \mathcal{D}_{\mathrm{KL}}\!\bigl(p_\theta(x_0|c) \| q_0(x_0|c)\bigr),
@@ -53,5 +26,3 @@ q^*(x_0|c) = \frac{1}{Z(c)}\, q_0(x_0|c)\exp\!\left(\frac{r(x_0,c)}{\tau}\right)
 \label{eq:reward_tilted_target}
 \end{equation}
 where $Z(c)$ is the normalizing partition function. As detailed in Appendix~\ref{app:proof_lem1}, minimizing Eq.~\eqref{eq:rlhf_kl} is mathematically equivalent to directly minimizing $\tau\mathcal{D}_{\mathrm{KL}}(p_\theta\|q^*)$. Thus, $q^*$ represents the fundamentally correct, perfectly balanced alignment target for clean images. Our core insight, developed next, is that this optimal target can be rigorously propagated forward through the diffusion process to guide every intermediate noise level without structural mismatch.
-
-% ============================================================

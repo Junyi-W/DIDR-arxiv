@@ -1,6 +1,5 @@
 \section{Empirical Results}
 \vspace{-3mm}
-% \subsection{Experimental Setup}
 
 \textbf{Models.}
 We evaluate \textsc{Didr} on two backbones. For primary experiments, we apply \textsc{Didr} to one-step SDXL~\citep{podell2023sdxl} at $1024\times1024$ resolution, initializing the generator from the DMD2-SDXL-1step checkpoint~\citep{yin2024improved} and using the pretrained SDXL diffusion model as both the frozen reference $s_{\mathrm{ref}}$ and the TA initialization. We report a standard variant (\textsc{Didr}) and an extended-training variant (\textsc{Didr}$_{\text{longer}}$). To assess generalizability, we additionally apply \textsc{Didr} to the Z-Image backbone~\citep{zimage} (\textsc{zimage-Didr}), initializing from Z-Image-Turbo. Full hyperparameters are in Appendix~\ref{app:implementation}.
@@ -10,7 +9,6 @@ All models are trained on text prompts from LAION-Aesthetic-6.25+~\citep{zhou202
 
 \textbf{Evaluation.}
 We report three categories of metrics: \textit{Preference} --- PickScore~\citep{pickscore}, ImageReward~\citep{xu2023imagereward}, HPSv2.1~\citep{hpsv2}, and Aesthetic Score~\citep{laionaes}; \textit{Text alignment} --- CLIPScore~\citep{hessel2021clipscore,radford2021learning}, DPG-Bench~\citep{dpgbench}, and GenEval~\citep{geneval}; and \textit{Fidelity} --- FID~\citep{heusel2017gans}. PickScore, ImageReward, Aesthetic Score, and CLIPScore are evaluated on $1\text{k}$ prompts from the MSCOCO-2017 validation set~\citep{lin2014microsoft}; FID on the full $30\text{k}$ validation images; HPSv2.1, DPG-Bench, and GenEval each use their own standard benchmark prompts. Since PickScore is also our training reward, the remaining preference metrics serve as independent out-of-domain evaluations. Further details are provided in Appendix~\ref{app:evaluation_metrics}.
-
 
 \vspace{-3mm}
 \subsection{Quantitative Results}
@@ -43,7 +41,6 @@ Since the target distribution is the reward-tilted $q^*$ (Eq.~\eqref{eq:reward_t
 \textbf{\textsc{Didr} generalizes across architectures and model scales.}
 \textsc{Didr} generalizes to DiT architectures at larger scale: applied to the 6B-parameter Z-Image backbone, \textsc{zimage-Didr} surpasses the 50-step Z-Image base on all preference metrics in a single step. Against the 8-step Z-Image-Turbo, it leads on ImageReward, Aesthetic Score, CLIPScore, and DPG-Bench with lower FID, while trailing on PickScore, HPSv2.1, and GenEval. These gains are driven by training, not initialization---the 1-step Z-Image-Turbo initially scores ImageReward $0.39$ and FID $36.7$, vs $1.08$ and $22.1$ for \textsc{zimage-Didr}.
 
-
 \input{tabs/main_results}
 
 \vspace{-3mm}
@@ -52,8 +49,8 @@ Since the target distribution is the reward-tilted $q^*$ (Eq.~\eqref{eq:reward_t
 
 \begin{figure}[!t]
 \centering
-\includegraphics[width=0.571\textwidth]{pictures/comparison_sdxl.png}%
-\hfill%
+\includegraphics[width=0.571\textwidth]{pictures/comparison_sdxl.png}
+\hfill
 \includegraphics[width=0.428\textwidth]{pictures/comparison_zimage.png}
 \caption{\textbf{Qualitative comparison at $1024\times1024$.} \textit{Left}: SDXL backbone (SDXL-DIDR, DI++, DI*, DMD2). \textit{Right}: Z-Image backbone (zimage-DIDR, Turbo 1NFE, Turbo 8NFE). Rows: backbone-specific prompts listed in Appendix~\ref{app:prompts}.}
 \label{fig:qualitative}
@@ -72,7 +69,6 @@ Figure~\ref{fig:trajectory} shows that \textsc{Didr} Pareto-dominates DI++ at ev
 
 \textbf{Effect of $(K,S)$ and temperature $\tau$.}
 Both $K$ and $S$ contribute independently: raising either from 1 to 4 improves all metrics, and $(K,S){=}(4,4)$ achieves the best result on all four metrics (Table~\ref{tab:ablation_ks}). Decreasing $\tau$ monotonically improves PickScore ($22.6{\to}23.8$) at the cost of FID ($16.3{\to}22.2$); we select $\tau{=}0.01$ as the operating point balancing both (Table~\ref{tab:ablation_tau}, Figure~\ref{fig:tau_ablation}).
-
 
 \input{tabs/ablation}
 

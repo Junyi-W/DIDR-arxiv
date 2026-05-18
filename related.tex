@@ -6,5 +6,4 @@ Preference alignment for multi-step diffusion models uses trajectory-accessible 
 \textbf{Classifier Guidance and Reward-Guided Sampling.}
 Classifier guidance~\citep{dhariwal2021diffusion} adds $\nabla_{x_t}\log p(c|x_t)$ to the score, which is a first-order approximation of the DRS (Remark~\ref{rem:classifier_guidance}), and related inference-time methods~\citep{chung2022diffusion,prabhudesai2023aligning,clark2023directly,kong2026ultra} apply differentiable rewards along the trajectory. However, all such methods modify only the sampling procedure and leave the generator weights unchanged; \textsc{Didr} instead trains an aligned one-step generator.
 
-% ============================================================
 \vspace{-3mm}

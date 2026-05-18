@@ -2,12 +2,10 @@
 \PassOptionsToPackage{shortlabels}{enumitem}
 \documentclass[11pt, letterpaper, logo, onecolumn, copyright]{template_from_google}
 
-% --- FONT AND ENCODING ---
 \usepackage[T1]{fontenc}
 \usepackage[utf8]{inputenc}
 \usepackage{microtype}
 
-% --- MATH AND SYMBOLS ---
 \usepackage{amsmath}
 \usepackage{amsfonts}
 \usepackage{amssymb}
@@ -16,7 +14,6 @@
 \usepackage{bm}
 \usepackage{nicefrac}
 
-% --- LAYOUT, TABLES, AND LISTS ---
 \usepackage{booktabs}
 \usepackage{enumitem}
 \usepackage{fancyhdr}
@@ -26,10 +23,8 @@
 \usepackage{arydshln}
 \usepackage{authblk}
 
-% --- ALGORITHMS ---
 \usepackage[ruled,vlined]{algorithm2e}
 
-% --- FIGURES, CAPTIONS, AND GRAPHICS ---
 \usepackage{graphicx}
 \usepackage{caption}
 \captionsetup{compatibility=false}
@@ -37,13 +32,10 @@
 \usepackage{tikz}
 \usetikzlibrary{shapes.geometric, arrows.meta, positioning, calc}
 
-% --- COLORS ---
 \usepackage[dvipsnames]{xcolor}
 
-% --- BIBLIOGRAPHY ---
 \usepackage[authoryear, sort&compress, round]{natbib}
 
-% --- HYPERLINKS AND REFERENCES ---
 \usepackage{hyperref}
 \usepackage{url}
 \definecolor{darkblue}{rgb}{0.0, 0.0, 0.6}
@@ -59,19 +51,16 @@
   citecolor=darkblue
 }
 
-% --- USER-DEFINED COMMANDS ---
 \usepackage[export]{adjustbox}
 \usepackage[capitalise]{cleveref}
 \crefname{equation}{Eq.}{Eqs.}
 
-% Paper macros
 \newcommand{\E}{\mathbb{E}}
 \newcommand{\R}{\mathbb{R}}
 \newcommand{\softmax}{\operatorname{softmax}}
 \newcommand{\cfg}{\alpha_{\mathrm{cfg}}}
 \newcommand{\diff}{\mathrm{d}}
 
-% Theorem environments
 \newtheorem{theorem}{Theorem}
 \newtheorem{proposition}[theorem]{Proposition}
 \newtheorem{corollary}[theorem]{Corollary}
@@ -80,16 +69,15 @@
 \newtheorem{remark}[theorem]{Remark}
 
 \makeatletter
-\renewcommand\paragraph{\@startsection{paragraph}{4}{\z@}%
-            {-2.5ex\@plus -1ex \@minus -.25ex}%
-            {1.25ex \@plus .25ex}%
+\renewcommand\paragraph{\@startsection{paragraph}{4}{\z@}
+            {-2.5ex\@plus -1ex \@minus -.25ex}
+            {1.25ex \@plus .25ex}
             {\itshape\normalsize\bfseries}}
 \makeatother
 
 \bibliographystyle{plainnat}
 \let\cite\citep
 
-% Float placement parameters
 \renewcommand{\topfraction}{0.9}
 \renewcommand{\bottomfraction}{0.8}
 \renewcommand{\textfraction}{0.05}
@@ -122,35 +110,6 @@
 Recent advances in one-step text-to-image generation have enabled real-time synthesis with remarkable efficiency and quality.
 Previous reinforcement learning methods for one-step generators combines the image space reward optimization and the diffusion noisy space distribution matching. This paradigm brings challenges due to a mismatch between terminal reward optimization and the underlying generative dynamics. As a result, optimization tends to exploit stochastic degrees of freedom, often improving reward at the expense of image fidelity. To address this issue, we propose \textbf{Diff-Instruct with Diffused Reward} (\textsc{Didr}), a data-free trajectory-level alignment framework derived from Integral KL minimization. \textsc{Didr} propagates the RLHF-optimal reward-tilted clean-image distribution across all noise levels along the diffusion trajectory. We show that this objective admits the same minimizer as clean-image RLHF, while naturally inducing \textbf{the Diffused Reward Score} (DRS), which acts as a reward-driven correction to the reference score function. To make this practical, we further introduce \textbf{the Diffused Reward Proxy} (DRP), an efficient estimator of DRS based on differentiable short-step denoising. Extensive experiments demonstrate that \textsc{Didr} consistently Pareto-dominates existing one-step SDXL baselines. Moreover, when transferred to a 6B DiT backbone (\textsc{Z-Image}), \textsc{Didr} surpasses its 50-step teacher in preference alignment while requiring only a single generation step. \href{https://github.com/Junyi-W/DIDR-code}{[Code]}.
 
-
-% Recent advances in one-step text-to-image generators have enabled efficient yet powerful real-time synthesis. 
-% However, preference alignment often suffers from a mismatch between terminal reward optimization and generative dynamics, causing optimizers to exploit stochastic degrees of freedom and trade fidelity for reward.
- 
-% To address this, we propose \textbf{Diff-Instruct with Diffused Reward} (\textsc{Didr}), a data-free trajectory-level alignment framework based on Integral KL minimization. \textsc{Didr} propagates the RLHF-optimal reward-tilted clean-image target to all noise levels. This objective shares the same minimizer as clean-image RLHF, and it naturally defines \textbf{the Diffused Reward Score} (DRS) as a reward correction to the reference score. We estimate DRS with \textbf{the Diffused Reward Proxy} (DRP) via differentiable short-step denoising.
-
-% Extensive experiments show \textsc{Didr} Pareto-dominates all one-step SDXL baselines; furthermore, upon transferring to a 6B DiT backbone (Z-Image), it surpasses the 50-step teacher in preference score
-%  with a single step.
-
-% One-step text-to-image generators enable fast sampling but remain difficult to
-% align with human preferences. Existing methods apply rewards only at the clean
-% image endpoint while regularizing through noisy diffusion marginals, creating a
-% structural mismatch that leads to fidelity degradation and reward hacking. The
-% key insight is that the RLHF-optimal target---a reward-tilted density on clean
-% images---can be propagated forward through the reference diffusion process to
-% define a principled alignment target at every noise level, resolving this
-% mismatch by design. We propose \textbf{\textsc{Didr}} (Diff-Instruct with
-% Diffused Reward), a principled trajectory-level alignment framework for one-step
-% generators that requires no image training data. We derive the \textbf{Diffused
-% Reward Score (DRS)}, which decomposes the trajectory target score into a reference
-% score plus a reward-induced correction, and the \textbf{Diffused Reward Proxy
-% (DRP)}, which estimates this correction via differentiable short-step posterior
-% denoising through a frozen reference model. On one-step SDXL at
-% $1024{\times}1024$ resolution, \textsc{Didr}$_{\text{longer}}$ improves PickScore
-% from $23.1$ to $23.9$ and ImageReward from $1.01$ to $1.10$ over the strongest
-% prior one-step baseline, while the standard \textsc{Didr} variant achieves the
-% best PickScore--FID trade-off among one-step alignment methods. The method further
-% transfers to a 6B DiT-based Z-Image backbone, confirming that principled
-% trajectory-level alignment yields stable and transferable preference gains.
 \end{abstract}
 
 \begin{document}
@@ -163,14 +122,10 @@ Previous reinforcement learning methods for one-step generators combines the ima
 \input{related}
 \input{conclusion}
 
-% Acknowledgments removed for anonymous submission.
-
 \bibliography{refs}
-
 
 \newpage
 
-% ============================================================
 \appendix
 
 \tableofcontents
